@@ -31,7 +31,7 @@ def search_review_videos(product, max_videos=5):
     return video_ids
 
 
-def scrape_video_comments(video_id, product, max_comments=200):
+def scrape_video_comments(video_id, product, max_comments=50):
 
     url = "https://www.googleapis.com/youtube/v3/commentThreads"
 
@@ -70,15 +70,15 @@ def scrape_video_comments(video_id, product, max_comments=200):
     return reviews
 
 
-def scrape_youtube(product):
+def scrape_youtube(product, max_videos=3):
 
-    video_ids = search_review_videos(product)
+    video_ids = search_review_videos(product, max_videos=max_videos)
 
     all_reviews = []
 
     for vid in video_ids:
 
-        comments = scrape_video_comments(vid, product)
+        comments = scrape_video_comments(vid, product, max_comments=50)
 
         all_reviews.extend(comments)
 

@@ -1,7 +1,7 @@
 from scrapers.reddit_scraper import scrape_reddit
 from scrapers.hackernews_scraper import scrape_hackernews
-from scrapers.trustpilot_scraper import scrape_trustpilot
 from scrapers.youtube_scraper import scrape_youtube
+import os
 import re
 
 def filter_reviews(reviews, product):
@@ -22,19 +22,23 @@ def collect_reviews(product):
     reviews = []
 
     try:
-        reviews += scrape_reddit(product)
+        reviews += scrape_reddit(product, max_reviews=60)
     except Exception as e:
         print("Reddit scraper failed:", e)
 
     try:
-        reviews += scrape_hackernews(product)
+        reviews += scrape_hackernews(product, max_reviews=100)
     except Exception as e:
         print("HackerNews scraper failed:", e)
 
-    try:
-        reviews += scrape_trustpilot(product)
-    except Exception as e:
-        print("Trustpilot scraper failed:", e)
+    if os.getenv("ENABLE_TRUSTPILOT", "false").lower() == "true":
+        try:
+            from scrapers.trustpilot_scraper import scrape_trustpilot
+            reviews += scrape_trustpilot(product, max_reviews=50)
+        except Exception as e:
+            print("Trustpilot scraper failed:", e)
+    else:
+        print("Trustpilot scraper disabled for this deployment.")
 
     try:
         reviews += scrape_youtube(product)

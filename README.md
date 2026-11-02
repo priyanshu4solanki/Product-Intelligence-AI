@@ -37,7 +37,7 @@ Designed for product teams, strategy leads, and founders who need real customer 
 
 ## ✨ **Key Features**
 
-* **Transformer-Grade Sentiment Classification:** Evaluates public reviews using RoBERTa fine-tuned on social context, categorizing signal into positive, neutral, and negative metrics.
+* **Configurable Sentiment Classification:** Uses lightweight VADER sentiment scoring by default for free-tier deployment, with optional RoBERTa inference for higher-capacity environments.
 * **Substantive Feature Extraction:** Identifies concrete product attributes, thermal states, workflow bottlenecks, and pricing grievances using n-gram frequency rather than broad labels.
 * **Anti-Meta Strategic Synthesis:** Enforces strict prompt boundaries on Groq LLM inference to ensure turnaround advice addresses the product itself (engineering, onboarding, positioning, and roadmap moats)—excluding internal pipeline noise.
 * **Editorial Binder Interface:** A distraction-free UI featuring smooth tab navigation (`#tab-overview`, `#tab-voice`, `#tab-findings`, `#tab-actions`) and clear data hierarchy.
@@ -107,6 +107,18 @@ streamlit run dashboard/dashboard.py
 ```
 
 Enter any target product (e.g., `iPhone 15`, `Linear`, `Notion`) and click **Run audit**.
+
+The default deployment sentiment backend is the lightweight VADER analyzer so the app can run within Render's free memory limit. To use the optional RoBERTa backend locally, install `transformers` and `torch`, then set:
+
+```env
+SENTIMENT_BACKEND=roberta
+```
+
+Trustpilot browser automation is disabled by default in hosted deployments because it requires a compatible Chrome/Chromium runtime. Enable it only in an environment configured for Selenium:
+
+```env
+ENABLE_TRUSTPILOT=true
+```
 
 ---
 
