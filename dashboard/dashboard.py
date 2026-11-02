@@ -79,6 +79,7 @@ html {{
 html, body, [class*="css"] {{
     font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     color: {INK} !important;
+    text-align: left !important;
 }}
 
 .stApp {{
@@ -277,10 +278,15 @@ blockquote.brief.negative {{ border-left-color: {NEGATIVE}; }}
     color: {POSITIVE} !important;
 }}
 .friction-row {{
-    border-left-color: {NEGATIVE};
+    border-left-color: {NEGATIVE} !important;
+    color: {INK} !important;
 }}
-.friction-row .mark {{
+.friction-row .mark,
+.friction-row span {{
     color: {NEGATIVE} !important;
+}}
+.friction-row span:last-child {{
+    color: {INK} !important;
 }}
 .mark {{ font-weight: 600; flex-shrink: 0; }}
 
@@ -301,6 +307,17 @@ blockquote.brief.negative {{ border-left-color: {NEGATIVE}; }}
     line-height: 1.55;
 }}
 .actions li > span:last-child {{
+    color: {INK} !important;
+}}
+.pipeline-output {{
+    background: #F7F8F5 !important;
+    color: {INK} !important;
+    border: 1px solid {LINE} !important;
+}}
+.stCode,
+.stCode pre,
+.stCode code {{
+    background: #F7F8F5 !important;
     color: {INK} !important;
 }}
 .anum {{
@@ -339,6 +356,18 @@ blockquote.brief.negative {{ border-left-color: {NEGATIVE}; }}
 .stTextInput input::placeholder {{
     color: {INK_SOFT} !important;
     -webkit-text-fill-color: {INK_SOFT} !important;
+    opacity: 1 !important;
+}}
+.input-label {{
+    color: {INK} !important;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+}}
+.stTextInput label,
+.stTextInput label p {{
+    color: {INK} !important;
+    font-weight: 600 !important;
     opacity: 1 !important;
 }}
 .stTextInput input:focus {{
@@ -396,10 +425,14 @@ st.markdown('</div>', unsafe_allow_html=True)
 st.markdown('<div class="page-mid query-row">', unsafe_allow_html=True)
 query_col, trigger_col = st.columns([5, 1])
 with query_col:
+    st.markdown(
+        '<div class="input-label">Product name</div>',
+        unsafe_allow_html=True,
+    )
     target_product = st.text_input(
         "Product name",
         placeholder="Enter target product (e.g., iPhone 15, Notion, Linear)",
-        label_visibility="visible"
+        label_visibility="collapsed"
     )
 with trigger_col:
     st.markdown('<div style="height: 1.65rem;"></div>', unsafe_allow_html=True)
