@@ -6,3 +6,4 @@ reportlab
 groq
 scikit-learn
 vaderSentiment
+python-dotenv
