@@ -260,7 +260,8 @@ blockquote.brief.negative {{ border-left-color: {NEGATIVE}; }}
     font-size: 0.9rem;
 }}
 .findings-list li:last-child {{ border-bottom: none; }}
-.finding-row {{
+.finding-row,
+.friction-row {{
     display: flex;
     gap: 0.6rem;
     padding: 0.65rem 0;
@@ -273,6 +274,9 @@ blockquote.brief.negative {{ border-left-color: {NEGATIVE}; }}
     color: {INK} !important;
     font-size: 0.9rem;
     line-height: 1.5;
+}}
+.finding-row {{
+    border-left-color: {POSITIVE} !important;
 }}
 .finding-row .mark {{
     color: {POSITIVE} !important;
