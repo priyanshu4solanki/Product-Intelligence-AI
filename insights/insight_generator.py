@@ -58,6 +58,8 @@ WRITING RULES:
 4. Do not combine several ideas in one long sentence.
 5. Keep each positive point and negative point to one concise sentence.
 6. Write each recommendation in this exact format: "Problem: ... Action: ... Benefit: ...".
+7. Never use only the product name, product category, or a generic label as a finding.
+8. Every strength must name a specific feature or user benefit. Every weakness must name a specific complaint or limitation.
 
 CRITICAL DIRECTIVES:
 7. FOCUS EXCLUSIVELY ON THE PRODUCT:
@@ -75,13 +77,13 @@ Respond strictly in valid JSON using this exact schema:
 {{
   "product_summary": "A clear 2-3 sentence summary of what users like, what frustrates them, and the main issue the product team should address.",
   "major_positive_points": [
-    "One specific thing users like, written in plain language and under 18 words",
+    "One specific feature or user benefit that users like, written in plain language and under 18 words",
     "Second distinct capability or ergonomic advantage",
     "Third distinct capability or workflow strength",
     "Fourth distinct capability or delight point"
   ],
   "major_negative_points": [
-    "One specific problem users report, written in plain language and under 20 words",
+    "One specific complaint or limitation users report, written in plain language and under 20 words",
     "Second distinct complaint or reliability failure",
     "Third distinct complaint or pricing/usability grievance",
     "Fourth distinct complaint or unmet expectation"

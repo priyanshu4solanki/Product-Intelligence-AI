@@ -31,6 +31,38 @@ LINE = "#DDE1DA"
 PAGE_BG = "#FFFFFF"
 BACKDROP = "#E7E9E3"
 
+
+def _usable_findings(items, product, fallback_reviews, label):
+    product_words = {word.lower() for word in product.split() if len(word) > 2}
+    usable = []
+    for item in items if isinstance(items, list) else []:
+        text = str(item).strip()
+        words = text.split()
+        if not text or len(words) < 4 or product.lower() in text.lower():
+            continue
+        if product_words and all(word in text.lower().split() for word in product_words):
+            continue
+        usable.append(text)
+    if usable:
+        return usable[:4]
+
+    review_text = str(fallback_reviews[0]).strip() if fallback_reviews else ""
+    if review_text and label == "weakness":
+        return [f"Users report this problem: {review_text}"]
+    if review_text:
+        return ["Users repeatedly praise a core part of the experience."]
+    return [f"No clear {label} pattern was found in the available feedback."]
+
+
+def _render_finding_list(items, color, marker):
+    for item in items:
+        st.markdown(
+            f'<div class="finding-row"><span class="mark" style="color:{color}">{marker}</span>'
+            f'<span>{escape(str(item))}</span></div>',
+            unsafe_allow_html=True,
+        )
+
+
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
@@ -223,6 +255,14 @@ blockquote.brief.negative {{ border-left-color: {NEGATIVE}; }}
     font-size: 0.9rem;
 }}
 .findings-list li:last-child {{ border-bottom: none; }}
+.finding-row {{
+    display: flex;
+    gap: 0.6rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid {LINE};
+    font-size: 0.9rem;
+    line-height: 1.5;
+}}
 .mark {{ font-weight: 600; flex-shrink: 0; }}
 
 /* Actions */
@@ -401,6 +441,8 @@ if Path(analysis_path).exists():
     if not negatives:
         negatives = [c[0] if isinstance(c, (list, tuple)) else c for c in data.get("top_complaints", [])[:4]]
 
+    positives = _usable_findings(positives, target_product, pos_samples, "strength")
+    negatives = _usable_findings(negatives, target_product, neg_samples, "weakness")
     recommendations = dossier.get("actionable_recommendations", [])
 
     # Extract or synthesize executive summary / gist
@@ -464,12 +506,10 @@ if Path(analysis_path).exists():
     find_left, find_right = st.columns(2)
     with find_left:
         st.markdown('<div class="section-label">STRENGTHS</div>', unsafe_allow_html=True)
-        rows = "".join(f'<li><span class="mark" style="color:{POSITIVE}">+</span>{escape(str(pt))}</li>' for pt in positives)
-        st.markdown(f'<ul class="findings-list">{rows}</ul>', unsafe_allow_html=True)
+        _render_finding_list(positives, POSITIVE, "+")
     with find_right:
         st.markdown('<div class="section-label">FRICTION POINTS</div>', unsafe_allow_html=True)
-        rows = "".join(f'<li><span class="mark" style="color:{NEGATIVE}">−</span>{escape(str(pt))}</li>' for pt in negatives)
-        st.markdown(f'<ul class="findings-list">{rows}</ul>', unsafe_allow_html=True)
+        _render_finding_list(negatives, NEGATIVE, "−")
 
     # ─────────────────────────────────────────────────────
     # 4. RECOMMENDED ACTIONS SECTION (ANCHOR: tab-actions)
