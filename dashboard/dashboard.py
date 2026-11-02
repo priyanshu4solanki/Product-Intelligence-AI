@@ -3,6 +3,7 @@ import os
 import json
 import tempfile
 import subprocess
+from html import escape
 from pathlib import Path
 
 import streamlit as st
@@ -256,17 +257,25 @@ blockquote.brief.negative {{ border-left-color: {NEGATIVE}; }}
 
 /* Native input & button restyling */
 .stTextInput input {{
-    background: transparent !important;
-    border: none !important;
+    background: #FFFFFF !important;
+    border: 1px solid {LINE} !important;
     border-bottom: 1.5px solid {INK} !important;
-    border-radius: 0 !important;
+    border-radius: 4px !important;
     color: {INK} !important;
+    -webkit-text-fill-color: {INK} !important;
+    caret-color: {INK} !important;
     font-size: 1rem !important;
-    padding: 0.4rem 0.1rem !important;
-    height: auto !important;
+    padding: 0.65rem 0.75rem !important;
+    height: 2.8rem !important;
+}}
+.stTextInput input::placeholder {{
+    color: {INK_SOFT} !important;
+    -webkit-text-fill-color: {INK_SOFT} !important;
+    opacity: 1 !important;
 }}
 .stTextInput input:focus {{
-    box-shadow: none !important;
+    border-color: {INK} !important;
+    box-shadow: 0 0 0 2px rgba(28, 43, 58, 0.12) !important;
 }}
 .stButton button {{
     background: {INK} !important;
@@ -320,9 +329,9 @@ st.markdown('<div class="page-mid">', unsafe_allow_html=True)
 query_col, trigger_col = st.columns([5, 1])
 with query_col:
     target_product = st.text_input(
-        "Product Name",
+        "Product name",
         placeholder="Enter target product (e.g., iPhone 15, Notion, Linear)",
-        label_visibility="collapsed"
+        label_visibility="visible"
     )
 with trigger_col:
     run_audit = st.button("Run audit", width="stretch")
@@ -411,8 +420,8 @@ if Path(analysis_path).exists():
     # ─────────────────────────────────────────────────────
     st.markdown(f"""
     <div class="summary-gist-box">
-        <div class="gist-header">Executive Brief & Gist</div>
-        <div class="gist-body">{product_summary_text}</div>
+        <div class="gist-header">Plain-language summary</div>
+        <div class="gist-body">{escape(str(product_summary_text))}</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -440,13 +449,13 @@ if Path(analysis_path).exists():
     st.markdown('<div id="tab-voice" style="padding-top: 0.6rem;"></div>', unsafe_allow_html=True)
     voice_left, voice_right = st.columns(2)
     with voice_left:
-        st.markdown('<div class="section-label">LEADING POSITIVE VOICE</div>', unsafe_allow_html=True)
-        st.markdown(f'<blockquote class="brief">{top_pos}</blockquote>', unsafe_allow_html=True)
-        st.markdown('<div class="cite">Representative excerpt</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-label">WHAT USERS LIKE</div>', unsafe_allow_html=True)
+        st.markdown(f'<blockquote class="brief">{escape(str(top_pos))}</blockquote>', unsafe_allow_html=True)
+        st.markdown('<div class="cite">Representative user comment</div>', unsafe_allow_html=True)
     with voice_right:
-        st.markdown('<div class="section-label">LEADING NEGATIVE VOICE</div>', unsafe_allow_html=True)
-        st.markdown(f'<blockquote class="brief negative">{top_neg}</blockquote>', unsafe_allow_html=True)
-        st.markdown('<div class="cite">Representative excerpt</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-label">WHAT USERS DISLIKE</div>', unsafe_allow_html=True)
+        st.markdown(f'<blockquote class="brief negative">{escape(str(top_neg))}</blockquote>', unsafe_allow_html=True)
+        st.markdown('<div class="cite">Representative user comment</div>', unsafe_allow_html=True)
 
     # ─────────────────────────────────────────────────────
     # 3. FINDINGS SECTION (ANCHOR: tab-findings)
@@ -455,11 +464,11 @@ if Path(analysis_path).exists():
     find_left, find_right = st.columns(2)
     with find_left:
         st.markdown('<div class="section-label">STRENGTHS</div>', unsafe_allow_html=True)
-        rows = "".join(f'<li><span class="mark" style="color:{POSITIVE}">+</span>{pt}</li>' for pt in positives)
+        rows = "".join(f'<li><span class="mark" style="color:{POSITIVE}">+</span>{escape(str(pt))}</li>' for pt in positives)
         st.markdown(f'<ul class="findings-list">{rows}</ul>', unsafe_allow_html=True)
     with find_right:
         st.markdown('<div class="section-label">FRICTION POINTS</div>', unsafe_allow_html=True)
-        rows = "".join(f'<li><span class="mark" style="color:{NEGATIVE}">−</span>{pt}</li>' for pt in negatives)
+        rows = "".join(f'<li><span class="mark" style="color:{NEGATIVE}">−</span>{escape(str(pt))}</li>' for pt in negatives)
         st.markdown(f'<ul class="findings-list">{rows}</ul>', unsafe_allow_html=True)
 
     # ─────────────────────────────────────────────────────
@@ -468,7 +477,7 @@ if Path(analysis_path).exists():
     st.markdown('<div id="tab-actions" class="section-label">RECOMMENDED ACTIONS</div>', unsafe_allow_html=True)
     if recommendations:
         rows = "".join(
-            f'<li><span class="anum">{i}</span>{rec}</li>'
+            f'<li><span class="anum">{i}</span>{escape(str(rec))}</li>'
             for i, rec in enumerate(recommendations, start=1)
         )
         st.markdown(f'<ul class="actions">{rows}</ul>', unsafe_allow_html=True)

@@ -34,7 +34,7 @@ def generate_insights(product):
             formatted_reviews += f"- {r}\n"
 
     prompt =prompt = f"""
-You are an executive product strategist and principal systems engineer conducting a commercial and technical audit of the product: "{product}".
+You are a clear, practical product analyst conducting a customer feedback audit of "{product}".
 
 The team building "{product}" has hired you to tell them exactly what is working, what is broken, and what concrete actions they must take to dominate their market.
 
@@ -51,35 +51,43 @@ DISCOVERED DEFECTS & FRICTION SIGNALS:
 RAW USER FEEDBACK CORPUS:
 {formatted_reviews}
 
+WRITING RULES:
+1. Use plain, everyday language that a non-technical manager can understand.
+2. Use short sentences. Avoid legal language, consultant jargon, hype, and vague phrases.
+3. Say exactly what users liked or disliked. Explain technical terms the first time you use them.
+4. Do not combine several ideas in one long sentence.
+5. Keep each positive point and negative point to one concise sentence.
+6. Write each recommendation in this exact format: "Problem: ... Action: ... Benefit: ...".
+
 CRITICAL DIRECTIVES:
-1. FOCUS EXCLUSIVELY ON THE PRODUCT:
+7. FOCUS EXCLUSIVELY ON THE PRODUCT:
    - Provide recommendations ONLY for improving "{product}".
    - NEVER mention scrapers, APIs, data collection, sentiment pipelines, social monitoring tools, or external platforms (e.g., YouTube, Reddit, HackerNews, Trustpilot). Act as if the user feedback was delivered directly to the product team.
-2. SUBSTANTIVE SPECIFICS OVER GENERIC LABELS:
+8. SUBSTANTIVE SPECIFICS OVER GENERIC LABELS:
    - NEVER repeat just the product name or category words (e.g., do NOT write "iPhone 15", "phone", "software").
    - Name explicit features, thermal states, workflow bottlenecks, pricing tiers, ergonomics, or failure modes directly mentioned by users.
-3. HOLISTIC & OPEN-ENDED RECOMMENDATIONS:
+9. HOLISTIC & OPEN-ENDED RECOMMENDATIONS:
    - Provide 5 to 7 concrete, high-impact recommendations for the makers of "{product}".
    - Cover diverse operational levers: engineering/firmware patches, positioning/narrative pivots, pricing/packaging models, user onboarding/misconceptions, and high-defensibility roadmap moats.
    - Each recommendation must name the specific problem it solves and the tactical fix.
 
 Respond strictly in valid JSON using this exact schema:
 {{
-  "product_summary": "A sharp, 2-3 sentence commercial audit detailing what '{product}' is, its current market standing, and the core tension between user praise and user frustration.",
+  "product_summary": "A clear 2-3 sentence summary of what users like, what frustrates them, and the main issue the product team should address.",
   "major_positive_points": [
-    "Specific genuine capability, technical moat, or high-praise user delight point",
+    "One specific thing users like, written in plain language and under 18 words",
     "Second distinct capability or ergonomic advantage",
     "Third distinct capability or workflow strength",
     "Fourth distinct capability or delight point"
   ],
   "major_negative_points": [
-    "Specific technical defect, thermal issue, bug, or hardware/software friction point",
+    "One specific problem users report, written in plain language and under 20 words",
     "Second distinct complaint or reliability failure",
     "Third distinct complaint or pricing/usability grievance",
     "Fourth distinct complaint or unmet expectation"
   ],
   "actionable_recommendations": [
-    "Detailed action covering problem context, concrete fix, and expected business/retention impact.",
+    "Problem: [user problem]. Action: [specific fix]. Benefit: [clear user or business result].",
     "Detailed action...",
     "Detailed action...",
     "Detailed action...",
