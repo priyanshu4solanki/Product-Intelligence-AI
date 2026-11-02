@@ -331,12 +331,27 @@ st.markdown('</div>', unsafe_allow_html=True)
 if run_audit and target_product:
     with st.spinner(f"Ingesting public telemetry and running NLP classification for '{target_product}'..."):
         repo_base = Path(__file__).resolve().parent.parent
-        subprocess.run(
+        pipeline_result = subprocess.run(
             [sys.executable, str(repo_base / "main.py")],
             input=target_product,
-            text=True
+            text=True,
+            cwd=repo_base,
+            capture_output=True
         )
-    st.success("Audit complete.")
+    if pipeline_result.returncode != 0:
+        st.error("The audit could not be completed. Review the pipeline output below.")
+        if pipeline_result.stdout:
+            st.code(pipeline_result.stdout, language="text")
+        if pipeline_result.stderr:
+            st.code(pipeline_result.stderr, language="text")
+    elif "No reviews found from any source." in pipeline_result.stdout:
+        st.warning("No usable public reviews were found for that product. Try a more specific or widely discussed product name.")
+        st.code(pipeline_result.stdout, language="text")
+    else:
+        st.success("Audit complete.")
+        if pipeline_result.stdout:
+            with st.expander("Pipeline details"):
+                st.code(pipeline_result.stdout, language="text")
 
 # ─────────────────────────────────────────────────────────────
 # LOAD PROCESSED DATA
