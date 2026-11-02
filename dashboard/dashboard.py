@@ -55,9 +55,10 @@ def _usable_findings(items, product, fallback_reviews, label):
 
 
 def _render_finding_list(items, color, marker):
+    row_class = "friction-row" if color == NEGATIVE else "finding-row"
     for item in items:
         st.markdown(
-            f'<div class="finding-row"><span class="mark" style="color:{color}">{marker}</span>'
+            f'<div class="{row_class}"><span class="mark" style="color:{color}">{marker}</span>'
             f'<span>{escape(str(item))}</span></div>',
             unsafe_allow_html=True,
         )
@@ -146,6 +147,9 @@ section.main > div.block-container {{
     border-left: 1px solid {LINE};
     border-right: 1px solid {LINE};
     padding: 0 2.2rem;
+}}
+.query-row {{
+    align-items: end;
 }}
 
 .meta-line {{
@@ -259,9 +263,24 @@ blockquote.brief.negative {{ border-left-color: {NEGATIVE}; }}
     display: flex;
     gap: 0.6rem;
     padding: 0.65rem 0;
-    border-bottom: 1px solid {LINE};
+    margin-bottom: 0.45rem;
+    padding: 0.75rem 0.85rem;
+    border: 1px solid {LINE};
+    border-left: 3px solid {POSITIVE};
+    border-radius: 4px;
+    background: #FFFFFF;
+    color: {INK} !important;
     font-size: 0.9rem;
     line-height: 1.5;
+}}
+.finding-row .mark {{
+    color: {POSITIVE} !important;
+}}
+.friction-row {{
+    border-left-color: {NEGATIVE};
+}}
+.friction-row .mark {{
+    color: {NEGATIVE} !important;
 }}
 .mark {{ font-weight: 600; flex-shrink: 0; }}
 
@@ -272,8 +291,17 @@ blockquote.brief.negative {{ border-left-color: {NEGATIVE}; }}
     gap: 0.9rem;
     align-items: flex-start;
     padding: 0.6rem 0;
+    margin-bottom: 0.55rem;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid {LINE};
+    border-radius: 4px;
+    background: #FFFFFF;
+    color: {INK} !important;
     font-size: 0.9rem;
     line-height: 1.55;
+}}
+.actions li > span:last-child {{
+    color: {INK} !important;
 }}
 .anum {{
     font-family: 'IBM Plex Mono', monospace;
@@ -365,7 +393,7 @@ st.markdown('<div class="doc-title">Product Intelligence Briefing</div>', unsafe
 st.markdown('<div class="doc-subtitle">Cross-channel sentiment diagnostics, failure-mode extraction, and turnaround strategy</div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown('<div class="page-mid">', unsafe_allow_html=True)
+st.markdown('<div class="page-mid query-row">', unsafe_allow_html=True)
 query_col, trigger_col = st.columns([5, 1])
 with query_col:
     target_product = st.text_input(
@@ -374,6 +402,7 @@ with query_col:
         label_visibility="visible"
     )
 with trigger_col:
+    st.markdown('<div style="height: 1.65rem;"></div>', unsafe_allow_html=True)
     run_audit = st.button("Run audit", width="stretch")
 st.markdown('</div>', unsafe_allow_html=True)
 
